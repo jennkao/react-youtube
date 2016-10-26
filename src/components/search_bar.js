@@ -24,7 +24,7 @@ class SearchBar extends Component { //Define a new class called Searchbar
 		//method already defined on parent class, we can call parent method on parent
 		//class by calling super. Without super, you'd get an error.
 
-		this.state = { term : 'Starting Value' } //whenever you use state, you init by creating
+		this.state = { term : '' } //whenever you use state, you init by creating
 		//new obj and assigning to this.state. this obj should contain properties
 		//that we want to record on the state (eg. when user updates search input 
 		//term is where we want to update that). Only inside of the constructor function
@@ -36,11 +36,12 @@ class SearchBar extends Component { //Define a new class called Searchbar
 		//controlled component/form element, controlled coponent has value set by state
 		//so its value only ever changes when the state changes
 		return (
-		<div>
-			<input 
-			value = {this.state.term} //value of the input it set to retrieve this.state.term ('')
-			onChange={event => this.setState({term: event.target.value})} />
-		</div> 
+			<div className="search-bar">
+				<input 
+					value = {this.state.term} //value of the input it set to retrieve this.state.term ('')
+					onChange={event => this.onInputChange(event.target.value)} />
+			</div> 
+		);
 		//even after you type stuff in/when onChange runs, the value of the input has not changed
 		//only after the eventHandler runs and updates this.state.term to new value.
 		//whenever setState calls, the component immed re-renders so when render function
@@ -53,13 +54,17 @@ class SearchBar extends Component { //Define a new class called Searchbar
 		//is equal to State. This feature allows us to have things like have SearchBar
 		//have a starting value pretty easily. Also allows us to read value of the input much
 		//easily using this.state.term then using something like Jquery.
-		);
 	}//whenever setState is called, our component is auto re-render and push all
 	//those updated info from render method into the DOM. when state is updated, 
 	//think STATE;
 //all input elements emit a change event; to tap into a browser event use 
 //{"on" + <event> = this.method}
 //whenever we write JS in JSX, you have to wrap them in curly braces 
+
+	onInputChange(term) {
+		this.setState({term});
+		this.props.onSearchTermChange(term);
+	}
 
 } //every class must have a render function, and it must return JSX or err.
 

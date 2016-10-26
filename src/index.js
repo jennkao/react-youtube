@@ -12,7 +12,7 @@
 // Whenever we import code from files that we wrote in JS, we have to give an 
 // actual file reference (relative path). We don't have to do it for the libraries 
 // because they are namespaced. Can only have one installed package called react. 
-
+import _ from 'lodash';
 import React, { Component } from 'react'; //Find library called "react" and assign it to var
 //this is the core library that knows how to render/nest react components
 import ReactDOM from 'react-dom'; //React library to render to the DOM.
@@ -40,32 +40,38 @@ class App extends Component {
 			selectedVideo: null
 		};
 
+		this.videoSearch('corgis');
+	}
+
+	videoSearch(term) {
 		//like AJAX: some config options and a callback option
 		//search is a network request, takes a bit of time. in between the first
 		//render of the component to fetching data to set it on our state, the
 		//length of videos === 0, which is why we see 0 for half a second before
 		//it updates to 5
-		YTSearch({key: API_KEY, term: 'corgis'}, videos => {
+		YTSearch({key: API_KEY, term: term}, videos => {
 			this.setState({ 
 				videos: videos,
 				selectedVideo: videos[0] 
 			}); 
 		});
-
 	}
 
 	render() {
+		const videoSearch = _.debounce((term) => {this.videoSearch(term)}, 300);
+
 		return ( 
 			<div>
-				<SearchBar />
+				<SearchBar onSearchTermChange={videoSearch}/>
 				<VideoDetail video={this.state.selectedVideo} />
 				<VideoList 
 					onVideoSelect={selectedVideo => this.setState({selectedVideo})}
 					videos={this.state.videos} />
 			</div>
 		);
-	} 
 
+
+	} 
 }
 //when APP first renders, the videos array will be empty. some parent
 //objects just can't get information fast enough to satisfy a child object.
